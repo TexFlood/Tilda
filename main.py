@@ -1,53 +1,57 @@
 import json
-
 import requests
-
-import RegularExpressionParser
-import secret
-
-from Semester import Semester
+import SessionHandler
+import StringParser
 from Course import Course
-
-uuid_regex = 'sessionDataKey=(\w{8}.\w{4}.\w{4}.\w{4}.\w{12})'
+from MeetTime import MeetTime
 
 browser_session = requests.Session()
 
-next_url = 'https://ssp.mycampus.ca/StudentRegistrationSsb/ssb/registrationHistory/registrationHistory?mepCode=UOIT'
-response = browser_session.get(next_url)
-
-session_key = RegularExpressionParser.parse_session_key(response)
-
-# Now we can login to the self-serve portal
-
-login_post_url = 'https://eidp.mycampus.ca/commonauth'
-self_serve_portal_homepage_response = browser_session.post(login_post_url, data={'username': secret.student_number,
-                                               'password': secret.password,
-                                               'sessionDataKey': session_key
-                                                      }
-                                )
-
+self_serve_portal_homepage_response = SessionHandler.get_self_portal_homepage(browser_session)
 # Now we can start working on the schedule.
-
-# This RegEx will return a few groups. The RegEx essentially says find me something that looks like this (for example
-# each capture group will be between ***):
-
-# <option value="***201909***" >***Fall 2019***</option>
-# <option value="***202001***" >***Winter 2020***</option>
-# <option value="***202005***" >***Spring/Summer 2020***</option>
-# <option value="***202009***" >***Fall 2020***</option>
-# <option value="***202101***" >***Winter 2021***</option>
-# <option value="***202105***" >***Spring/Summer 2021***</option>
-# <option value="***202109***" >***Fall 2021***</option>
 
 
 
 # Here we get all the matches to our regular expression. We need to parse them into "Semester" objects.
-re_matches = re.findall(semesters_list_regex,self_serve_portal_homepage_response.text)
-semesters = []
-print(type(re_matches))
-for i in re_matches:
-    temp_sem = Semester(i[0],i[1])
-    semesters.append(temp_sem)
-sorted(semesters)
 
+semesters = StringParser.parse_semesters(self_serve_portal_homepage_response)
+
+# Populating courses in each semester
+for semester in semesters:
+    semesters_json_url = 'https://ssp.mycampus.ca/StudentRegistrationSsb/ssb/registrationHistory/reset?term=' + semester.code.__str__()
+
+    response = browser_session.get(semesters_json_url)
+    obj = json.loads(response.text)
+    course_list = obj['data']['registrations']
+    courses = []
+    for item in course_list:
+        meet_times = []
+        for meet_time in item['meetingTimes']:
+            meet = MeetTime(
+                meet_time['room'],
+                meet_time['beginTime'],
+                meet_time['endTime'],
+                meet_time['startDate'],
+                meet_time['endDate'],
+                meet_time['monday'],
+                meet_time['tuesday'],
+                meet_time['wednesday'],
+                meet_time['thursday'],
+                meet_time['friday'],
+                meet_time['saturday'],
+                meet_time['sunday'],
+                meet_time['category']
+            )
+            meet_times.append(meet)
+        course = Course(
+            item['courseTitle'],
+            item['subject'] + ' ' + item['courseNumber'],
+            StringParser.parse_instructor_name(item['instructorNames']),
+            item['courseReferenceNumber'],
+            meet_times,
+            item['scheduleDescription']
+        )
+        print(course)
+        courses.append(course)
+print('done')
 
