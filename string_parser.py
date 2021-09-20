@@ -1,4 +1,9 @@
+import json
+
 import requests
+
+from Course import Course
+from meet_time import MeetTime
 from Semester import Semester
 import re
 
@@ -51,3 +56,37 @@ def parse_instructor_name(list_of_names: list) -> str:
             instructor = instructor + ' and ' + list_of_names[count + 1]
 
     return instructor
+
+def parse_courses(json_string)->list:
+    course_list = json_string['data']['registrations']
+    courses = []
+    for item in course_list:
+        meet_times = []
+        for meet_time in item['meetingTimes']:
+            meet = MeetTime(
+                meet_time['room'],
+                meet_time['beginTime'],
+                meet_time['endTime'],
+                meet_time['startDate'],
+                meet_time['endDate'],
+                meet_time['monday'],
+                meet_time['tuesday'],
+                meet_time['wednesday'],
+                meet_time['thursday'],
+                meet_time['friday'],
+                meet_time['saturday'],
+                meet_time['sunday'],
+                meet_time['category']
+            )
+            meet_times.append(meet)
+        course = Course(
+            item['courseTitle'],
+            item['subject'] + ' ' + item['courseNumber'],
+            parse_instructor_name(item['instructorNames']),
+            item['courseReferenceNumber'],
+            meet_times,
+            item['scheduleDescription']
+        )
+        courses.append(course)
+    return course_list
+

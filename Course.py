@@ -1,4 +1,4 @@
-from MeetTime import MeetTime
+from meet_time import MeetTime
 
 
 class Course:
