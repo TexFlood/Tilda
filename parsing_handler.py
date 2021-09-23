@@ -1,8 +1,10 @@
 import json
 
 import requests
+from typing import List
 
 from Course import Course
+from Course_Component import Course_Component
 from meet_time import MeetTime
 from Semester import Semester
 import re
@@ -30,9 +32,7 @@ def parse_homepage_to_semester_list(self_serve_portal_homepage_response: request
 
     # They are now in Chronological order such that semesters[0] is the oldest semester available.
     semesters.sort()
-    for i in semesters:
-        print(i)
-    return semesters
+    return semesters[len(semesters) - 1]
 
 
 def parse_session_key(response_string: str) -> str:
@@ -56,35 +56,59 @@ def parse_instructor_name(list_of_names: list) -> str:
     return instructor
 
 
-def parse_courses(json_string) -> list:
-    course_list = json_string['data']['registrations']
-    courses = []
-    for item in course_list:
-        meet_times = []
-        for meet_time in item['meetingTimes']:
-            meet = MeetTime(
-                meet_time['room'],
-                meet_time['beginTime'],
-                meet_time['endTime'],
-                meet_time['startDate'],
-                meet_time['endDate'],
-                meet_time['monday'],
-                meet_time['tuesday'],
-                meet_time['wednesday'],
-                meet_time['thursday'],
-                meet_time['friday'],
-                meet_time['saturday'],
-                meet_time['sunday'],
-                meet_time['category']
+def parse_course(json) -> list:
+    course_components = json['data']['registrations']
+    course_list = []
+    already_in_list = False
+    for course_component in course_components:
+        course = course_component['courseTitle']
+        new_course = Course(course)
+        if len(course_list) == 0:
+            course_list.append(
+                new_course
             )
-            meet_times.append(meet)
-        course = Course(
-            item['courseTitle'],
-            item['subject'] + ' ' + item['courseNumber'],
-            parse_instructor_name(item['instructorNames']),
-            item['courseReferenceNumber'],
-            meet_times,
-            item['scheduleDescription']
-        )
-        courses.append(course)
-    return courses
+        for existing_course in course_list:
+            if existing_course.course_title == course_component['courseTitle']:
+                already_in_list = True
+            else:
+                already_in_list = False
+        if not already_in_list:
+            course_list.append(
+                new_course
+            )
+    return course_list
+
+
+def parse_course_components(json_obj, course_title:str)->List[Course]:
+    course_list = []
+    json_course_list = json_obj['data']['registrations']
+    for json_course in json_course_list:
+        if json_course['courseTitle'] == course_title:
+                meet_times = []
+                for meet_time in json_course['meetingTimes']:
+                    meet = MeetTime(
+                        meet_time['room'],
+                        meet_time['beginTime'],
+                        meet_time['endTime'],
+                        meet_time['startDate'],
+                        meet_time['endDate'],
+                        meet_time['monday'],
+                        meet_time['tuesday'],
+                        meet_time['wednesday'],
+                        meet_time['thursday'],
+                        meet_time['friday'],
+                        meet_time['saturday'],
+                        meet_time['sunday'],
+                        meet_time['category']
+                    )
+                    meet_times.append(meet)
+                course = Course_Component(
+                    json_course['courseTitle'],
+                    json_course['subject'] + ' ' + json_course['courseNumber'],
+                    parse_instructor_name(json_course['instructorNames']),
+                    json_course['courseReferenceNumber'],
+                    meet_times,
+                    json_course['scheduleDescription']
+                )
+                course_list.append(course)
+    return course_list

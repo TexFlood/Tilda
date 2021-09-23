@@ -1,3 +1,5 @@
+
+
 class Semester:
     courses = []
 

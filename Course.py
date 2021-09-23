@@ -1,36 +1,19 @@
-import datetime
-from meet_time import MeetTime
+import Course_Component
 
 
-class Course:
-    course_number = None
-    course_title = None
-    instructor_name = None
-    crn = None
-    meeting_times = None
-    course_type = None
-
-    def __init__(
-            self,
-            course_title: str,
-            course_number: int,
-            instructor_name: str,
-            crn: str,
-            meeting_times: MeetTime,
-            course_type: str,
-    ):
-        self.course_title: str = course_title
-        self.course_number = course_number
-        self.instructor_name = instructor_name
-        self.crn = crn
-        self.meeting_times = meeting_times
-        self.course_type = course_type
-        for meeting_time in self.meeting_times:
-            print(meeting_time)
-
-    def __str__(self):
-        return_string: str = ''
-        for meet_time in self.meeting_times:
-            return_string += 'Course code: ' + self.course_number + '    Course Title: ' + ' ' + self.course_title + ' at ' + str(
-                meet_time) + '\n'
-        return return_string
+class Course():
+    has_lecture_component:bool
+    has_tutorial_component:bool
+    has_lab_component:bool
+    course_components = []
+    course_title:str
+    def __init__(self,course_title):
+        self.course_title = course_title
+    def determine_course_type(self):
+        for course_component in self.course_components:
+            if(course_component.course_type == 'Lecture'):
+                has_lecture_component = True
+            if (course_component.course_type == 'Laboratory'):
+                has_lecture_component = True
+            if (course_component.course_type == 'Tutorial'):
+                has_lecture_component = True
