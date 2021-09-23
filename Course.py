@@ -1,3 +1,4 @@
+import datetime
 from meet_time import MeetTime
 
 
@@ -18,15 +19,18 @@ class Course:
             meeting_times: MeetTime,
             course_type: str,
     ):
-        self.course_title = course_title
+        self.course_title: str = course_title
         self.course_number = course_number
         self.instructor_name = instructor_name
         self.crn = crn
         self.meeting_times = meeting_times
         self.course_type = course_type
+        for meeting_time in self.meeting_times:
+            print(meeting_time)
 
     def __str__(self):
         return_string: str = ''
         for meet_time in self.meeting_times:
-            return_string += 'Course Title: ' + ' ' + self.course_title + ' ' + str(meet_time) + '\n'
+            return_string += 'Course code: ' + self.course_number + '    Course Title: ' + ' ' + self.course_title + ' at ' + str(
+                meet_time) + '\n'
         return return_string

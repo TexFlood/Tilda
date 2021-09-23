@@ -1,4 +1,6 @@
 class Semester:
+    courses = []
+
     def __init__(self, code, title):
         self.title = title
         self.code = code

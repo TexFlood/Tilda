@@ -1,5 +1,7 @@
+import json
+
 import requests
-import string_parser
+import parsing_handler
 import secret
 
 
@@ -8,7 +10,7 @@ def get_self_portal_homepage(browser_session: requests.Session) -> requests.Resp
 
     response = browser_session.get(login_page_url)
 
-    session_key = string_parser.parse_session_key(response.text)
+    session_key = parsing_handler.parse_session_key(response.text)
 
     # Now we can login to the self-serve portal
 
@@ -20,6 +22,3 @@ def get_self_portal_homepage(browser_session: requests.Session) -> requests.Resp
                                                                )
 
     return self_serve_portal_homepage_response
-
-def get_courses_portal_page():
-    return

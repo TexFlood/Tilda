@@ -31,6 +31,6 @@ class MeetTime:
         self.is_course_on_friday = is_course_on_friday
         self.is_course_on_saturday = is_course_on_saturday
         self.is_course_on_sunday = is_course_on_sunday
-        self.category = category
+        self.category = category # week 1 or week 2
     def __str__(self):
         return 'From ' + str(self.begin_time) + ' to ' + str(self.end_time)

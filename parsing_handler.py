@@ -8,8 +8,7 @@ from Semester import Semester
 import re
 
 
-def parse_semesters(self_serve_portal_homepage_response: requests.Response) -> list:
-
+def parse_homepage_to_semester_list(self_serve_portal_homepage_response: requests.Response) -> list:
     semesters_list_regex = '<option value="(\d+)" >([A-Za-z]+(?:(?:\/[A-Za-z]+ \d{4})|(?: \d{4})))'
 
     # This RegEx will return a few groups. The RegEx essentially says find me something that looks like this (for
@@ -39,7 +38,7 @@ def parse_semesters(self_serve_portal_homepage_response: requests.Response) -> l
 def parse_session_key(response_string: str) -> str:
     uuid_regex = 'sessionDataKey=(\w{8}.\w{4}.\w{4}.\w{4}.\w{12})'
     session_key = re.search(uuid_regex, response_string).group(1)
-    print(session_key)
+    print('Session Key: ' + session_key)
     return session_key
 
 
@@ -54,10 +53,10 @@ def parse_instructor_name(list_of_names: list) -> str:
         instructor = list_of_names[0]
         for count in range(len(list_of_names) - 1):
             instructor = instructor + ' and ' + list_of_names[count + 1]
-
     return instructor
 
-def parse_courses(json_string)->list:
+
+def parse_courses(json_string) -> list:
     course_list = json_string['data']['registrations']
     courses = []
     for item in course_list:
@@ -88,5 +87,4 @@ def parse_courses(json_string)->list:
             item['scheduleDescription']
         )
         courses.append(course)
-    return course_list
-
+    return courses

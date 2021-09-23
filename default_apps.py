@@ -1,21 +1,21 @@
-from App import App
+from app import app
 app_list = [
-App(
+app(
     "Canvas",
     "https://learn.ontariotechu.ca",
     "chair-school",
 ),
-App(
+app(
     "OntarioTech Software Portal",
     "https://ontariotechu.ca/current-students/academics/mycampus.php",
     "progress-download",
 ),
-App(
+app(
     "My Campus",
     "https://software.ontariotechu.ca/login.php",
-    "town-hall",
+    "lead-pencil",
 ),
-App(
+app(
     "Gmail",
     "https://mail.google.com",
     "gmail"
