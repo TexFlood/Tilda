@@ -9,6 +9,7 @@ class Course_Component:
     crn = None
     meeting_times = None
     course_type = None
+    url = 'https://example.org/'
 
     def __init__(
             self,
@@ -17,7 +18,7 @@ class Course_Component:
             instructor_name: str,
             crn: str,
             meeting_times: MeetTime,
-            course_type: str,
+            course_type: str
     ):
         self.course_title: str = course_title
         self.course_number = course_number

@@ -5,6 +5,7 @@ from typing import List
 
 from Course import Course
 from Course_Component import Course_Component
+from exceptions import LoginFailed
 from meet_time import MeetTime
 from Semester import Semester
 import re
@@ -26,19 +27,32 @@ def parse_homepage_to_semester_list(self_serve_portal_homepage_response: request
 
     re_matches = re.findall(semesters_list_regex, self_serve_portal_homepage_response.text)
     semesters = []
+    if(len(re_matches) == 0):
+        raise LoginFailed
+        print('Login failed')
+    print('Login Successful')
+
     for i in re_matches:
         temp_sem = Semester(i[0], i[1])
         semesters.append(temp_sem)
 
     # They are now in Chronological order such that semesters[0] is the oldest semester available.
     semesters.sort()
+
     return semesters[len(semesters) - 1]
 
+def parse_name(self_serve_portal_homepage_response: requests.Response):
+    #<meta name="fullName" content="Bolivar-Hazboun, Xavier"/>
+    regex_statement = '<meta name="fullName" content="(.+), (.+)"\/'
+    text = self_serve_portal_homepage_response.content.decode()
+    name = []
+    name.append(re.search(regex_statement,text).group(2))
+    name.append(re.search(regex_statement,text).group(1))
+    return name
 
 def parse_session_key(response_string: str) -> str:
     uuid_regex = 'sessionDataKey=(\w{8}.\w{4}.\w{4}.\w{4}.\w{12})'
     session_key = re.search(uuid_regex, response_string).group(1)
-    print('Session Key: ' + session_key)
     return session_key
 
 
@@ -112,3 +126,6 @@ def parse_course_components(json_obj, course_title:str)->List[Course]:
                 )
                 course_list.append(course)
     return course_list
+# TODO want to move a method from main to here to maintain order in code.
+def create_json_files(response:str):
+    ()

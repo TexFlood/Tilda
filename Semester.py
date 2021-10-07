@@ -2,6 +2,7 @@
 
 class Semester:
     courses = []
+    student_name = None
 
     def __init__(self, code, title):
         self.title = title
