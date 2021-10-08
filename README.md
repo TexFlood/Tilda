@@ -7,7 +7,7 @@ In unix systems (and now even windows), "~" or "Tilda" is a symbol for the home 
 
 OntarioTech has a weird way of having us access our schedules. Finding lecture links is annoying, even with bookmarks. So I made Tilda. Tilda is a python script that generates a homepage for you by simply logging into MyCampus. The python script generates HTML and CSS, all you need to do is point your browser to index.html as a homepage and viola! This was forked off of another redditors design to work for OntarioTech students.
 
-## Roadmap!
+## Roadmap
 
 I'm working on getting Tilda to show the users daily schedule on the right. The endgame is to have live links such that when you click on the schedule item it will open the link to the live lecture link.
 
