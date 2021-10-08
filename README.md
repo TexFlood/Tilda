@@ -11,6 +11,8 @@ OntarioTech has a weird way of having us access our schedules. Finding lecture l
 
 I'm working on getting Tilda to show the users daily schedule on the right. The endgame is to have live links such that when you click on the schedule item it will open the link to the live lecture link.
 
-I'd like to grab a few more startpages from r/startpages and fit them accordingly. Then add a GUI to 
+I'd like to grab a few more startpages from r/startpages and fit them accordingly.
+
+Lastly a GUI is coming, I'm just having trouble putting a python GUI into an executable file.
 
 ![firefox_Yi3fuLXGFZ](https://user-images.githubusercontent.com/55899422/136603000-b7b28f7d-4b53-4710-8c52-97d1f67d76da.png)
